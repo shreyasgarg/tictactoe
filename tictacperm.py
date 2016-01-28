@@ -1,0 +1,253 @@
+#+==========================+===========================*=================+==============+
+#|					Tic Tac Toe Perm    				 |
+#|					Shreyas Garg					 |
+#|					04/29/13					 |
+#|					Period:4					 |
+#|											 |
+#+==========================+===========================*=================+==============+
+
+def storeDataBaseToFile(dataBase):
+  import pickle
+  pickle.dump(dataBase, open("tictacdb.txt","wb"))
+
+def retrieveDataFromBaseFile():
+  import pickle
+  dataBase = pickle.load(open("tictacdb.txt","rb"))
+  return dataBase
+
+def legalBoard(thing):
+  if (thing[0] == thing[1] == thing[2]):
+    if thing[0] != '-':
+      return [False,0]
+  if (thing[3] == thing[4] == thing[5]):
+    if thing[3] != '-':
+      return [False,3]
+  if (thing[6] == thing[7] == thing[8]):
+    if thing[6] != '-':
+      return [False,6]
+  if (thing[0] == thing[3] == thing[6]):
+    if thing[0] != '-':
+      return [False,0]
+  if (thing[1] == thing[4] == thing[7]):
+    if thing[1] != '-':
+      return [False,1]
+  if (thing[2] == thing[5] == thing[8]):
+    if thing[2] != '-':
+      return [False,2]
+  if (thing[0] == thing[4] == thing[8]):
+    if thing[0] != '-':
+      return [False,0]
+  if (thing[6] == thing[4] == thing[2]):
+    if thing[6] != '-':
+      return [False,6]
+  return [True]
+
+#def printBoard(board):
+  #if board[0] == '-':
+    #print(' ', '1', ' |',sep = '', end = '')
+  #else:
+    #print(' ', board[0], ' |',sep = '', end = '')
+  #if board[1] == '-':
+    #print(' ', '2', ' |',sep = '', end = '')
+  #else:
+    #print(' ', board[1], ' |',sep = '', end = '')
+  #if board[2] == '-':
+    #print(' 3')
+  #else:
+    #print(' ', board[2])
+  #print('---+---+---')
+  #if board[3] == '-':
+    #print(' ', '4', ' |',sep = '', end = '')
+  #else:
+    #print(' ', board[3], ' |',sep = '', end = '')
+  #if board[4] == '-':
+    #print(' ', '5', ' |',sep = '', end = '')
+  #else:
+    #print(' ', board[4], ' |',sep = '', end = '')
+  #if board[5] == '-':
+    #print(' 6')
+  #else:
+    #print(' ', board[5])
+  #print('---+---+---')
+  #if board[6] == '-':
+    #print(' ', '7', ' |',sep = '', end = '')
+  #else:
+    #print(' ', board[6], ' |',sep = '', end = '')
+  #if board[7] == '-':
+    #print(' ', '8', ' |',sep = '', end = '')
+  #else:
+    #print(' ', board[7], ' |',sep = '', end = '')
+  #if board[8] == '-':
+    #print(' 9')
+  #else:
+    #print(' ', board[8])
+
+def printBoard(board):
+  print(' ', board[0], ' |',sep = '', end = '')
+  print(' ', board[1], ' |',sep = '', end = '')
+  print(' ', board[2])
+  print('---+---+---')
+  print(' ', board[3], ' |',sep = '', end = '')
+  print(' ', board[4], ' |',sep = '', end = '')
+  print(' ', board[5])
+  print('---+---+---')
+  print(' ', board[6], ' |',sep = '', end = '')
+  print(' ', board[7], ' |',sep = '', end = '')
+  print(' ', board[8])
+  
+def insertX(board,pos):
+  return board[:pos] + 'X' + board[pos + 1:]
+
+def insertO(board, pos):
+  return board[:pos] + 'O' + board[pos + 1:]
+
+def chooseCells(scores,tempBoard):
+  from random import randint
+  tot = 0
+  for thing in scores:
+      tot += thing
+  #print(tot, scores, tempBoard)
+  place = 0
+  if tot == 0:
+    for thing in tempBoard:
+      if thing == '-':
+        return place
+      place += 1
+  count = 0
+  if tot < 1:
+    tot = 0
+    for thing in scores:
+      if thing < 0:
+        thing *= -1
+      tot += thing
+    rand = randint(1,tot)
+    for thing in scores:
+      if thing < 0:
+        thing *= -1
+      rand -= thing
+      if rand <= 0:
+        return count
+      count += 1
+  rand = randint(1,tot)
+  count = 0
+  for thing in scores:
+    rand -= thing
+    if rand <= 0:
+      return count
+    count += 1
+  return 0
+  
+def main():
+  ##Setting up database-------------------------------------------
+  #dataBase = {}
+  #seq = [0,1,2,3,4,5,6,7,8,]
+  #from itertools import permutations
+  #filledBoards = list(permutations(seq,9))
+  #for perm in filledBoards:
+    #tempBoard = '---------'
+    #for num in range(8):
+      #if num % 2 == 0:
+        #tempBoard = insertX(tempBoard,perm[num])
+      #else:
+        #tempBoard = insertO(tempBoard,perm[num])
+      #countEmpty = 0
+      #for item in tempBoard:
+        #if item == '-':
+          #countEmpty += 1
+      #if countEmpty in [1,2,3]:
+        #countEmpty = 1
+      #if countEmpty in [4,5]:
+        #countEmpty = 9
+      #if countEmpty in [6,7]:
+        #countEmpty = 9
+      #if countEmpty in [8,9]:
+        #countEmpty = 9
+      #prob = [0,0,0,0,0,0,0,0,0]
+      #place = 0
+      #for item in tempBoard:
+        #if item == '-':
+          #prob[place] = countEmpty
+        #place += 1
+      #if legalBoard(tempBoard):
+        #dataBase[tempBoard] = prob
+  #dataBase['---------'] = [9,9,9,9,9,9,9,9,9]
+  ##Training computer-------------------------------------------
+  #for i in range(3000000):
+    #if i % 1000 == 0:
+      #print(i)
+    #tempBoard = '---------'
+    #count = 0
+    #boards = []
+    #while legalBoard(tempBoard)[0]:
+      #if '-' in tempBoard:
+        #print(tempBoard, ' ', num, ' ', dataBase[tempBoard])Tic Tac Toe Perm 
+        #num = chooseCells(dataBase[tempBoard],tempBoard)
+        #boards.append((tempBoard,num))
+        #if count % 2 == 0:
+          #tempBoard = insertX(tempBoard,num)
+        #else:
+          #tempBoard = insertO(tempBoard,num)
+        #count += 1
+      #else:
+        #break
+    #winner = legalBoard(tempBoard)
+    #if len(winner) > 1:
+      #winner = tempBoard[winner[1]]
+    #else:
+      #winner = winner[0]
+    #count = 0
+    #if winner == 'O' or winner ==  'X':
+      #for item in boards:
+        #if count % 2 == 0 and winner == 'X':
+          #dataBase[item[0]][item[1]] += 3
+        #if count % 2 == 0 and winner == 'O':
+          #dataBase[item[0]][item[1]] -= 1
+        #if count % 2 == 1 and winner == 'X':
+          #dataBase[item[0]][item[1]] -= 1
+        #if count % 2 == 1 and winner == 'O':
+          #dataBase[item[0]][item[1]] += 3
+        #count += 1
+        #print(item, " ", dataBase[item[0]])
+    #if winner == True:
+      #for item in boards:
+        #dataBase[item[0]][item[1]] += 1
+  #storeDataBaseToFile(dataBase)
+  #exit()
+  ##Starting Game-------------------------------------------
+  dataBase = retrieveDataFromBaseFile()
+  print("You are X and you get to go first")
+  board = '---------'
+  printBoard([1,2,3,4,5,6,7,8,9])
+  print("The above is how the indices shall be numbered. Input the index where you would like to go when asked.")
+  while legalBoard(board):
+    charac = input("Where would you like to move? ")
+    while board[(int)(charac)-1] != '-':
+      print('That is not a valid move. Try again')
+      charac = input("Where would you like to move? ")
+    board = insertX(board,(int)(charac) - 1)
+    big = 0
+    ind = 0
+    count = 0
+    if '-' not in board:
+      print('Cat\'s game')
+      exit()
+    if not legalBoard(board)[0]:
+      printBoard(board)
+      winner = legalBoard(board)
+      if len(winner) == 1:
+        print("Cat's Game")
+      else:
+        print('The winner was ', board[winner[1]])
+      exit()
+    for thing in dataBase[board]:
+      if thing > big:
+        big = thing
+        ind = count
+      count += 1
+    board = insertO(board, ind)
+    printBoard(board)
+    winner = legalBoard(board)
+    if len(winner) == 2:
+      print('The winner was ', board[winner[1]])
+      exit()
+if __name__ == '__main__': main()
